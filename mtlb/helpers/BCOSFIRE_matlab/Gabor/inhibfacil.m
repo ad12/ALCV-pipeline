@@ -1,0 +1,2 @@
+function inhibfacil()
+end
