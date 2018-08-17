@@ -37,7 +37,6 @@ for i = 1:length(subject_subdirs)
             max_score = lens_score;
             I_best = im_lens;
         end
-        
     end
     imwrite(I_best, fullfile(top_extracted_lens_path, [lens_subdir_data.name, lens_ext]));
     fprintf(sprintf('%s: \t\t %0.2f\n', lens_subdir_data.name, max_score));

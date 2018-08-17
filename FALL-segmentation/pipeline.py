@@ -1,5 +1,4 @@
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 
 import numpy as np
 import argparse
@@ -25,6 +24,10 @@ DEFAULT_BATCH_SIZE = 50
 MASK_KEYWORD = 'mask'
 LENS_KEYWORD = 'lens'
 
+reusable_model = None
+reuse_model = False
+
+BATCH_SIZE = DEFAULT_BATCH_SIZE
 
 def load_input_images(subject_dir, resize=False):
     if not os.path.isdir(subject_dir):
@@ -61,8 +64,6 @@ def load_input_images(subject_dir, resize=False):
     assert ims.shape[0] == im_count, '%d ims but %d files' %(ims.shape[0], im_count)
     assert(len(ims.shape) == 4)
 
-    print("Shape: " + str(ims.shape))
-
     return ims, formatted_file_names
 
 
@@ -73,7 +74,6 @@ def ensemble_learning(ims, model, weight_dir):
     assert(len(ims.shape) == 4)
 
     mask_shape = (ims.shape[:3]) + (1,)
-    print(mask_shape)
     masks = np.zeros(mask_shape)
 
     model_count = 0
@@ -85,9 +85,7 @@ def ensemble_learning(ims, model, weight_dir):
             model.load_weights(filepath, by_name=True)
 
             # run inference
-            model_mask = model.predict(ims, batch_size=DEFAULT_BATCH_SIZE)
-            print(model_mask.shape)
-            print(ims.shape)
+            model_mask = model.predict(ims, batch_size=BATCH_SIZE)
 
             masks += model_mask
 
@@ -111,7 +109,7 @@ def basic_mask(ims, model, weight_file):
 
     model.load_weights(weight_file, by_name=True)
 
-    masks = model.predict(ims, batch_size=DEFAULT_BATCH_SIZE)
+    masks = model.predict(ims, batch_size=BATCH_SIZE)
 
     masks = (masks > 0.5).astype(np.uint8)
     assert (np.unique(masks) == np.asarray([0, 1])).all()
@@ -123,6 +121,7 @@ def basic_mask(ims, model, weight_file):
 
 
 def generate_mask(subject_dir, weight_dir_or_file, ensemble=False, resize=False):
+    print('Processing %s' % subject_dir)
     if not os.path.isdir(subject_dir):
         raise NotADirectoryError('%s not a valid directory' % subject_dir)
 
@@ -131,7 +130,7 @@ def generate_mask(subject_dir, weight_dir_or_file, ensemble=False, resize=False)
     ims = preprocess_input(ims_orig.astype(np.float32))
     input_shape = (ims.shape[1], ims.shape[2], ims.shape[3])
     if (input_shape != DEFAULT_INPUT_SHAPE):
-        warnings.warn('Original model was trained using images of size (%d, %d, %d).'
+        warnings.warn('Original model was trained using images of size (%d, %d, %d). '
                       'Inference on shape (%d, %d, %d) is not tested)' %(DEFAULT_INPUT_SHAPE[0],
                                                                          DEFAULT_INPUT_SHAPE[1],
                                                                          DEFAULT_INPUT_SHAPE[2],
@@ -171,6 +170,24 @@ def generate_mask(subject_dir, weight_dir_or_file, ensemble=False, resize=False)
         # scale to 0,255
         imageio.imwrite(mask_vis_filepath, mask * 255)
 
+def list_subject_dirs(supra_folder):
+    files = os.listdir(supra_folder)
+    subject_dirs = []
+
+    for file in files:
+        subject_folder = os.path.join(supra_folder, file)
+        if not os.path.isdir(subject_folder):
+            continue
+        subject_dirs.append(subject_folder)
+
+    print('=='*20)
+    print('%d subjects found:' % (len(subject_dirs)))
+    for file in subject_dirs:
+        print(file)
+    print('=='*20)
+
+    return subject_dirs
+
 
 def parse_args():
     """Parse arguments given through command line (argv)
@@ -178,30 +195,45 @@ def parse_args():
         :raise NotADirectoryError if dicom path does not exist or is not a directory
         """
     parser = argparse.ArgumentParser(description='Segment anterior lens regions in frames')
-    parser.add_argument('-d', '--subject', metavar='D', type=str, nargs=1,
-                        help='path to subject directory storing frames')
-    parser.add_argument('-w', '--weight', metavar='W', type=str, nargs=1,
+    parser.add_argument('-d', '--dir', metavar='D', required=True, type=str, nargs=1,
+                        help='Either 1. Path to subject directory storing frames. or 2. Path to directory of subject directories')
+
+    parser.add_argument('-w', '--weight', required=True, metavar='W', type=str, nargs=1,
                         help='path to weight(s). If path is a directory, use ensemble learning. Else path must be an h5 file')
-    parser.add_argument('-r', nargs='?', const=True, default=False, help='Resize images to default shape for segmentation. If input '
+    parser.add_argument('-r', action='store_const', const=True, default=False, help='Resize images to default shape for segmentation. If input '
                                                                          'images are not of shape (216, 384, 3), then '
                                                                          'model may not perform optimally')
+    parser.add_argument('-b',  '--batch', action='store_const', const=True, default=False, help='Batch process all subdirectories in D. '
+                                                                         'Assumes all subdirectories in D are of subjects')
+    parser.add_argument('--mini_batch_size', metavar='BS', type=int, nargs=1, default=DEFAULT_BATCH_SIZE, help='Mini batch size. Default is %d' % (DEFAULT_BATCH_SIZE))
 
     args = parser.parse_args()
+
     try:
-        subject_path = args.subject[0]
+        dir_path = args.dir[0]
     except Exception:
-        raise ValueError("Path to subject (case id) directory is required")
+        raise ValueError("Path to directory is required")
 
     try:
         weight_path = args.weight[0]
     except Exception:
         raise ValueError("No path to weight directory/file provided")
 
-    if not os.path.isdir(subject_path):
-        raise NotADirectoryError("Directory \'%s\' does not exist" % subject_path)
+    if not os.path.isdir(dir_path):
+        raise NotADirectoryError("Directory \'%s\' does not exist" % dir_path)
 
-    generate_mask(subject_path, weight_path, ensemble=os.path.isdir(weight_path), resize=args.r)
+    global BATCH_SIZE
+    BATCH_SIZE = args.mini_batch_size
+    if (args.batch):
+        subject_dirs = list_subject_dirs(dir_path)
+        for subject_path in subject_dirs:
+            generate_mask(subject_path, weight_path, ensemble=os.path.isdir(weight_path), resize=args.r)
+    else:
+        subject_path = dir_path
+        generate_mask(subject_path, weight_path, ensemble=os.path.isdir(weight_path), resize=args.r)
 
 
 if __name__ == '__main__':
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
+
     parse_args()

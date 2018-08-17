@@ -23,7 +23,7 @@ function varargout = ALCVSoft_debug(varargin)
 
 % % Edit the above text to modify the response to help ALCVSoft_debug
 
-% Last Modified by GUIDE v2.5 14-Aug-2018 20:49:08
+% Last Modified by GUIDE v2.5 16-Aug-2018 22:10:00
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -71,6 +71,7 @@ path(path,'IQA');
 
 path(path, 'utils');
 path(path, 'fall_lens_helpers');
+path(path, 'classification_utils');
 
 
 set(0,'RecursionLimit',2000);
@@ -3694,6 +3695,7 @@ end
             end
         end
         delete(waitbarHandle);
+        
     end
 
 end
@@ -4531,20 +4533,55 @@ function EstimateAgeMenu_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-errordlg('Function not available');
-return;
+% Ask user for directory of subjects
+supradir = uigetdir(pwd(), 'Choose directory containing all subjects');
+
+files = get_subdirectories(supradir);
+dirFlags = [files.isdir];
+subject_dirs = files(dirFlags);
+num_subjects = length(subject_dirs);
+
+% For each subject, use best frame for analysis
+BEST_LENS_DIR = 'best_lens';
+thresholds = 33:38;
+
+data = [];
+f = waitbar(0, 'Classifying subjects');
+for i=1:num_subjects
+    waitbar(i/num_subjects, f);
+    subject_dir_data = subject_dirs(i);
+    subject_dir = fullfile(subject_dir_data.folder, subject_dir_data.name);
+    best_lens_dir = fullfile(subject_dir, BEST_LENS_DIR);
+    
+    best_frame_data = dir(fullfile(best_lens_dir, '*.png'));
+    if (length(best_frame_data) ~= 1)
+        errordlg('Best Frame folder should only have 1 lens image');
+        return;
+    end
+    
+    % Extract features
+    I_features = extract_CNN_features(best_lens_dir);
+    
+    % Classify
+    labels = classify_age(I_features', thresholds);
+    labels = labels(:)';
+    % Write to file
+    r_data = [{subject_dir_data.name} string(labels)];
+    r_data = arrayfun(@(x)char(r_data(x)),1:numel(r_data),'uni',false);
+    data = [data; r_data];
 end
 
+close(f)
+% construct table
+row_names = {'Filename'};
+threshold_strs = strcat('T_', string(thresholds));
+row_names = [row_names, threshold_strs];
+row_names = arrayfun(@(x)char(row_names(x)),1:numel(row_names),'uni',false);
+T = cell2table(data, 'VariableNames', row_names);
 
-% --------------------------------------------------------------------
-function ExtractEyeRegionsMenu_Callback(hObject, eventdata, handles)
-% hObject    handle to ExtractEyeRegionsMenu (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-errordlg('Function not available');
-return;
+writetable(T, fullfile(supradir, 'results.csv'));
 end
+
 
 
 % --------------------------------------------------------------------
@@ -5263,20 +5300,34 @@ if (isempty(im_filedir))
     return;
 end
 
-mask_filedir = fullfile(im_filedir, 'mask-pred');
+refine_extract_lens_per_subject(im_filedir, true);
+
+end
+
+
+function refine_extract_lens_per_subject(subject_filedir, show_waitbar)
+
+if nargin < 2
+    show_waitbar = false;
+end
+
+mask_filedir = fullfile(subject_filedir, 'mask-pred');
 if (exist(mask_filedir,'dir') ~= 7)
     errordlg('Path %s does not exist.\n Please use python FALL segmentation algorithm to generate raw masks')
     return;
 end
 
-lens_filedir = fullfile(im_filedir, 'lens');
+lens_filedir = fullfile(subject_filedir, 'lens');
 check_and_create_dir(lens_filedir);
 
-ims_data = dir(fullfile(im_filedir, '*.png'));
+ims_data = dir(fullfile(subject_filedir, '*.png'));
 num_ims = length(ims_data);
 
 waitbar_title = 'Extracting Lens %d/%d';
-f = waitbar(0, sprintf(waitbar_title, 0, num_ims));
+
+if show_waitbar
+    f = waitbar(0, sprintf(waitbar_title, 0, num_ims));
+end
 
 for i = 1:length(ims_data)
     curr_im_data = ims_data(i);
@@ -5307,7 +5358,54 @@ for i = 1:length(ims_data)
     lens = crop_to_mask(im, mask_upsampled);
     imwrite(lens, fullfile(lens_filedir, curr_im_data.name))
     
-    waitbar(i/num_ims, f, sprintf(waitbar_title, i, num_ims))
+    if (show_waitbar)
+        waitbar(i/num_ims, f, sprintf(waitbar_title, i, num_ims))
+    end
+end
+
+% Extract highest quality frame
+BEST_LENS_DIR = 'best_lens';
+[I, filename] = get_best_lens(lens_filedir);
+best_lens_full_dir = fullfile(subject_filedir, BEST_LENS_DIR);
+check_and_create_dir(best_lens_full_dir);
+imwrite(I, fullfile(best_lens_full_dir, filename));
+
+if (show_waitbar)
+    close(f)
+end
+
+end
+
+
+% --------------------------------------------------------------------
+function BatchExtractLensMenu_Callback(hObject, eventdata, handles)
+% hObject    handle to BatchExtractLensMenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+im_filedir = uigetdir(pwd(), 'Choose subjects folder');
+if (isempty(im_filedir))
+    return;
+end
+
+subject_dirs = get_subdirectories(im_filedir);
+dirFlags = [subject_dirs.isdir];
+subject_dirs = subject_dirs(dirFlags);
+num_subjects = length(subject_dirs);
+
+if (num_subjects == 0)
+    errordlg('No subfolders of subjects found');
+    return;
+end
+
+f = waitbar(0, sprintf('Extracting lens - subject %d/%d', 0, num_subjects));
+for i=1:num_subjects
+    subject_dir_data = subject_dirs(i);
+    subject_dir = fullfile(subject_dir_data.folder, subject_dir_data.name);
+    
+    % Extract lens for subject
+    refine_extract_lens_per_subject(subject_dir);
+    
+    waitbar(i/num_subjects, f, sprintf('Extracting lens - subject %d/%d', i, num_subjects))
 end
 
 close(f)
@@ -5315,6 +5413,20 @@ close(f)
 end
 
 
+% --------------------------------------------------------------------
+function UtilsMenu_Callback(hObject, eventdata, handles)
+% hObject    handle to UtilsMenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+end
 
 
+% --------------------------------------------------------------------
+function ExtractTopFramesMenu_Callback(hObject, eventdata, handles)
+% hObject    handle to ExtractTopFramesMenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
 
+extract_frames()
+
+end

@@ -1,3 +1,16 @@
+# Ignore Data files
 **/data/
+
+# Ignore project files
 **/.idea
 **/__pycache__
+
+# Ignore runtime files
+*.asv
+
+# Ignore external libraries
+**/libsvm*
+**/matconvnet*
+
+# Ignore dag files
+mtlb/classification_utils/imagenet-resnet-152-dag.mat
