@@ -17,14 +17,23 @@ This repository hosts the code used for both the coarse anterior lens localizati
  - scipy                     >=1.1.0                  
  - tesnorflow/tensorflow-gpu          >=  1.4.0      
 
-               
+
 ### MATLAB
 - MATLAB >= R2018a
 - [LIBSVM for MATLAB](https://www.csie.ntu.edu.tw/~cjlin/libsvm/) >= 3.18
 - [matconvnet](http://www.vlfeat.org/matconvnet/) >= 1.0-beta25
 
-Turn off hardware acceleration for video decoding
+## Environment Setup
+### MATLAB
+
+1. Turn off hardware acceleration for video decoding
 `matlab.video.read.UseHardwareAcceleration('off')`
+
+2. Download and setup [matconvnet](http://www.vlfeat.org/matconvnet/)
+
+3. Download [resnet-152-dag](http://www.vlfeat.org/matconvnet/models/imagenet-resnet-152-dag.mat) and save in `mtlb/classification_utils` folder
+
+4. Download [libsvm]((https://www.csie.ntu.edu.tw/~cjlin/libsvm/) for MATLAB. Add to matlab path. 
 
 ## Input files
 
