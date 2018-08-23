@@ -6,8 +6,8 @@ I = uint8(I);
 niqe_score = computequality(I,niqe_params.blocksizerow, niqe_params.blocksizecol, niqe_params.blockrowoverlap, niqe_params.blockcoloverlap, ...
                             niqe_params.mu_prisparam, niqe_params.cov_prisparam);          
                     
-tmp1 = Qg1*1000; % on scale 0-.1, scale to 0-100
-tmp2 = 100-niqe_score; % measure deviation from 100 (perfect)
+tmp1 = Qg1*10000;
+tmp2 = 1000-niqe_score;
 
 lens_score = tmp1+tmp2;
 
