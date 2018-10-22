@@ -42,7 +42,7 @@ Released under GPL v2 License
 
 3. Download [resnet-152-dag](http://www.vlfeat.org/matconvnet/models/imagenet-resnet-152-dag.mat) and save in `mtlb/classification_utils` folder
 
-4. Download [libsvm]((https://www.csie.ntu.edu.tw/~cjlin/libsvm/) for MATLAB. Add to matlab path. 
+4. Download [libsvm](https://www.csie.ntu.edu.tw/~cjlin/libsvm/) for MATLAB. Add to matlab path. 
 
 ## Input files
 
