@@ -6,6 +6,9 @@ This repository hosts the code used for both the coarse anterior lens localizati
 
 Please cite this paper if you use any component of this software.
 
+This software is copyrighted and may only be used for academic research.
+COPYRIGHT (C) 2018 DUKE UNIVERSITY 
+
 Released under GPL v2 License
 
 ## Dependencies
