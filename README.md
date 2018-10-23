@@ -2,7 +2,7 @@
 
 This repository hosts the code used for both the coarse anterior lens localization (CALL) and finer anterior lens localization (FALL) methods detailed in [Arjun D. Desai, Chunlei Peng, Leyuan Fang, Dibyendu Mukherjee, Andrew Yeung, Stephanie J. Jaffe, Jennifer B. Griffin, and Sina Farsiu,
 "Open-source, machine and deep learning-based automated software for age estimation through smartphone lens imaging",
- Biomedical Optics Express, (IN REVIEW), 2018](google.com)
+ Biomedical Optics Express, (IN REVIEW), 2018](www.google.com)
 
 Please cite this paper if you use any component of this software.
 
