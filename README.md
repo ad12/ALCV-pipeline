@@ -2,12 +2,12 @@
 
 This repository hosts the code used for both the coarse anterior lens localization (CALL) and finer anterior lens localization (FALL) methods detailed in [Arjun D. Desai, Chunlei Peng, Leyuan Fang, Dibyendu Mukherjee, Andrew Yeung, Stephanie J. Jaffe, Jennifer B. Griffin, and Sina Farsiu,
 "Open-source, machine and deep learning-based automated software for age estimation through smartphone lens imaging",
- Biomedical Optics Express, (IN REVIEW), 2018](https://www.google.com)
+ Biomedical Optics Express, (IN PRESS), 2018](https://www.google.com)
 
 Please cite this paper if you use any component of this software.
 
 This software is copyrighted and may only be used for academic research.
-COPYRIGHT (C) 2018 DUKE UNIVERSITY 
+COPYRIGHT (C) 2018 DUKE UNIVERSITY
 
 Released under GPL v2 License
 
@@ -32,6 +32,33 @@ Released under GPL v2 License
 - [LIBSVM for MATLAB](https://www.csie.ntu.edu.tw/~cjlin/libsvm/) >= 3.18
 - [matconvnet](http://www.vlfeat.org/matconvnet/) >= 1.0-beta25
 
+### Open source libraries
+We thank all research pioneers who have open-sourced their work for public use. We have utilized several open-source libraries as part of our code, all of which are documented below.
+
+#### Blind image quality analyzers
+1. S. Gabarda and G. Cristóbal, "Blind image quality assessment through anisotropy," J.
+Opt. Soc. Am. A 24, B42-B51 (2007). [link](https://www.osapublishing.org/josaa/abstract.cfm?uri=josaa-24-12-b42)
+2. A. Mittal, R. Soundararajan, and A. C. Bovik, "Making a "Completely Blind" Image
+Quality Analyzer," IEEE Signal Processing Letters 20, 209-212 (2013). [link](https://ieeexplore.ieee.org/document/6353522)
+
+#### Circular hough transform
+3. D. Young, "Hough Transform for Circles", Mathworks File Exchange (2016). [link](https://www.mathworks.com/matlabcentral/fileexchange/26978-hough-transform-for-circles)
+
+#### Extraneous
+The following code was added as part of the library but not used in the final computation:
+
+4. Dense scene correspondence - C. Liu, J. Yuen, and A. Torralba. "Sift flow: Dense correspondence across scenes and its applications." IEEE transactions on pattern analysis and machine intelligence 33.5, 978-994 (2011). [link](https://people.csail.mit.edu/celiu/SIFTflow/)
+
+5. Image fusion framework - Y. Liu, S. Liu and Z. Wang, "A General Framework for Image Fusion Based on Multi-scale Transform and Sparse Representation", Information Fusion (2014). [link](https://github.com/RexYing/infant-eye/tree/master/Dibyendu/Project%20-%20Neonatal%20Eye/External%20Codes/Fusion/MST_SR_fusion_toolbox)
+
+6. Intelligent Scissors [link](http://www.andrewnoske.com/wiki/Livewire_Segmentation)
+
+7. Cosfire segmentation - G. Azzopardi, N. Strisciuglio, M. Vento, and N. Petkov, "Trainable COSFIRE filters for vessel delineation with application to retinal images", Medical Image Analysis, Available online 3 September 2014, ISSN 1361-8415 [link](http://dx.doi.org/10.1016/j.media.2014.08.002) (available feature in MATLAB GUI code, but not used in lens segmentation)
+
+8. Dijkstra segmentation - L. Grady, Graph Analysis Toolbox. [link](http://leogrady.net/software/) (available feature in MATLAB GUI code, but not used in lens segmentation)
+
+9. Hysteresis segmentation - L. Xie, "Hysteresis thresholding for 3D images (or 2D)" Mathworks File Exchange (2013). [link](https://www.mathworks.com/matlabcentral/fileexchange/44648-hysteresis-thresholding-for-3d-images-or-2d)
+
 ## Environment Setup
 ### MATLAB
 
@@ -42,7 +69,7 @@ Released under GPL v2 License
 
 3. Download [resnet-152-dag](http://www.vlfeat.org/matconvnet/models/imagenet-resnet-152-dag.mat) and save in `mtlb/classification_utils` folder
 
-4. Download [libsvm](https://www.csie.ntu.edu.tw/~cjlin/libsvm/) for MATLAB. Add to matlab path. 
+4. Download [libsvm](https://www.csie.ntu.edu.tw/~cjlin/libsvm/) for MATLAB. Add to matlab path.
 
 ## Input files
 
