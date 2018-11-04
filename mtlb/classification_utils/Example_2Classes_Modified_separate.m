@@ -1,4 +1,6 @@
 %% Sample of 2-bin classification system
+%   @author: Arjun Desai, Duke University
+%            (c) Duke University
 %% train on manually selected images
 clc; clear all; close all;
 

@@ -1,8 +1,21 @@
-%% Print f1 accuracies of subjects
+%% Print mean f1 accuracies of subjects
+% Params to initialize:
+%   base_folder: the folder where test results are stored per subject
+%                Example File structure:
+%                   | base_folder
+%                       | Subject1
+%                           | results.mat
+%                       | Subject2
+%                           | results.mat
+%                       | ....
+%   @author: Arjun Desai, Duke University
+%            (c) Duke University
+
 clear;clc;
 base_folder = 'mask_refined/mask_upsampled/test_results/';
 subdirs = get_subdirectories(base_folder);
 count = 0;
+
 thresh = 0.42;
 for i = 1:length(subdirs)
     case_id_subdir = subdirs(i).name;
