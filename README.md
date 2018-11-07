@@ -1,8 +1,6 @@
 # ALCV Lens Segmentation
 
-This repository hosts the code used for both the coarse anterior lens localization (CALL) and finer anterior lens localization (FALL) methods detailed in [Arjun D. Desai, Chunlei Peng, Leyuan Fang, Dibyendu Mukherjee, Andrew Yeung, Stephanie J. Jaffe, Jennifer B. Griffin, and Sina Farsiu,
-"Open-source, machine and deep learning-based automated software for age estimation through smartphone lens imaging",
- Biomedical Optics Express, (IN PRESS), 2018](https://www.google.com)
+This repository hosts the code used for both the coarse anterior lens localization (CALL) and finer anterior lens localization (FALL) methods detailed in [Arjun D. Desai, Chunlei Peng, Leyuan Fang, Dibyendu Mukherjee, Andrew Yeung, Stephanie J. Jaffe, Jennifer B. Griffin, and Sina Farsiu, "Open-source, machine and deep learning-based automated algorithm for gestational age estimation through smartphone lens imaging," Biomed. Opt. Express 9, 6038-6052 (2018)](https://www.osapublishing.org/boe/abstract.cfm?uri=boe-9-12-6038)
 
 Please cite this paper if you use any component of this software.
 
@@ -83,7 +81,7 @@ Examples:
 **Please put all videos in a single folder**. This folder will be the base folder for analysis.  
 
 ## Lens segmentation
-This section describes the pipeline used for both the coarse anterior lens localization (CALL) and finer anterior lens localization (FALL) methods detailed in [Desai and Peng, et. al - TODO](google.com)
+This section describes the pipeline used for both the coarse anterior lens localization (CALL) and finer anterior lens localization (FALL) methods detailed in [Desai, et al. - TODO](https://www.osapublishing.org/boe/abstract.cfm?uri=boe-9-12-6038)
 
 ### Coarse anterior lens localization (CALL)
 
