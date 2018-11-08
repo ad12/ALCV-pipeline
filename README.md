@@ -42,20 +42,23 @@ Quality Analyzer," IEEE Signal Processing Letters 20, 209-212 (2013). [link](htt
 #### Circular hough transform
 3. D. Young, "Hough Transform for Circles", Mathworks File Exchange (2016). [link](https://www.mathworks.com/matlabcentral/fileexchange/26978-hough-transform-for-circles)
 
+#### DeeplabV3+ implementation
+4. Keras implementation of DeeplabV3+ GitHub repo (bonlime) - [link](https://github.com/bonlime/keras-deeplab-v3-plus)
+
 #### Extraneous
 The following code was added as part of the library but not used in the final computation:
 
-4. Dense scene correspondence - C. Liu, J. Yuen, and A. Torralba. "Sift flow: Dense correspondence across scenes and its applications." IEEE transactions on pattern analysis and machine intelligence 33.5, 978-994 (2011). [link](https://people.csail.mit.edu/celiu/SIFTflow/)
+5. Dense scene correspondence - C. Liu, J. Yuen, and A. Torralba. "Sift flow: Dense correspondence across scenes and its applications." IEEE transactions on pattern analysis and machine intelligence 33.5, 978-994 (2011). [link](https://people.csail.mit.edu/celiu/SIFTflow/)
 
-5. Image fusion framework - Y. Liu, S. Liu and Z. Wang, "A General Framework for Image Fusion Based on Multi-scale Transform and Sparse Representation", Information Fusion (2014). [link](https://github.com/RexYing/infant-eye/tree/master/Dibyendu/Project%20-%20Neonatal%20Eye/External%20Codes/Fusion/MST_SR_fusion_toolbox)
+6. Image fusion framework - Y. Liu, S. Liu and Z. Wang, "A General Framework for Image Fusion Based on Multi-scale Transform and Sparse Representation", Information Fusion (2014). [link](https://github.com/RexYing/infant-eye/tree/master/Dibyendu/Project%20-%20Neonatal%20Eye/External%20Codes/Fusion/MST_SR_fusion_toolbox)
 
-6. Intelligent Scissors [link](http://www.andrewnoske.com/wiki/Livewire_Segmentation)
+7. Intelligent Scissors [link](http://www.andrewnoske.com/wiki/Livewire_Segmentation)
 
-7. Cosfire segmentation - G. Azzopardi, N. Strisciuglio, M. Vento, and N. Petkov, "Trainable COSFIRE filters for vessel delineation with application to retinal images", Medical Image Analysis, Available online 3 September 2014, ISSN 1361-8415 [link](http://dx.doi.org/10.1016/j.media.2014.08.002) (available feature in MATLAB GUI code, but not used in lens segmentation)
+8. Cosfire segmentation - G. Azzopardi, N. Strisciuglio, M. Vento, and N. Petkov, "Trainable COSFIRE filters for vessel delineation with application to retinal images", Medical Image Analysis, Available online 3 September 2014, ISSN 1361-8415 [link](http://dx.doi.org/10.1016/j.media.2014.08.002) (available feature in MATLAB GUI code, but not used in lens segmentation)
 
-8. Dijkstra segmentation - L. Grady, Graph Analysis Toolbox. [link](http://leogrady.net/software/) (available feature in MATLAB GUI code, but not used in lens segmentation)
+9. Dijkstra segmentation - L. Grady, Graph Analysis Toolbox. [link](http://leogrady.net/software/) (available feature in MATLAB GUI code, but not used in lens segmentation)
 
-9. Hysteresis segmentation - L. Xie, "Hysteresis thresholding for 3D images (or 2D)" Mathworks File Exchange (2013). [link](https://www.mathworks.com/matlabcentral/fileexchange/44648-hysteresis-thresholding-for-3d-images-or-2d)
+10. Hysteresis segmentation - L. Xie, "Hysteresis thresholding for 3D images (or 2D)" Mathworks File Exchange (2013). [link](https://www.mathworks.com/matlabcentral/fileexchange/44648-hysteresis-thresholding-for-3d-images-or-2d)
 
 ## Environment Setup
 ### MATLAB
