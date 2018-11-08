@@ -115,7 +115,7 @@ We have provided the code for you to run both of these methods. Details on how t
 #### Network Weights
 The 25-fold cross validation scheme produced 25 different optimal weight files. These files can be found [here - Link weight](google.com). The optimal weights for each cross validation experiment are the weights that minimized the validation loss.
 
-All weight files are of the H5 file format. The file names indicate the validation loss. For example, a weight file named `weights.019-0.1529.h5` produced a validation loss of 0.1529 after epoch 19/20.
+All weight files are of the H5 file format. The file names indicate the validation loss. For example, a weight file named `005-weights.019-0.1529.h5` produced a validation loss of 0.1529 after epoch 19 in cross validation experiment 5 (zero-indexed).
 
 #### Shell Interface
 To run this program from a python-enabled shell or command line interface, run `python -m opt/path/pipeline` with the flags detailed below. `opt/path` is the path to the file `fall_pipeline.py`
